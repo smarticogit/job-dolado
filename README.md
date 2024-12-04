@@ -1,123 +1,85 @@
-# Dolado: Teste prático para Backend
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
 
-## Introdução
-Este é o teste que nós da [Dolado](http://www.dolado.com.br) usamos para avaliar os candidatos de vagas para Backend. Do júnior ao sênior, todos são avaliados pelo mesmo teste mas por critérios distintos. Se você estiver participando de um processo seletivo para nossa equipe, certamente em algum momento receberá este link, mas caso você tenha chego aqui "por acaso", sinta-se convidado a desenvolver nosso teste e enviar uma mensagem para nós no e-mail `tech@dolado.com.br`.
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-A ideia deste teste é ser acessível para todos, mas de acordo com a vaga olhamos com maior rigor para alguns pontos. De todo modo, esperamos que no decorrer deste desafio você tenha uma ótima experiência e esteja satisfeito com o resultado final antes de enviá-lo. Por este motivo, não colocamos um prazo para a realização do teste e esperamos que você dedique o tempo necessário até estar satisfeito com o resultado.
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-Nós fazemos isso esperando que as pessoas mais iniciantes entendam qual o modelo de profissional que temos por aqui e que buscamos para o nosso time. Portanto, se você estiver se candidatando a uma vaga mais iniciante, não se assuste e faça o melhor que você puder!
+## Description
 
-## Instruções
-Você deverá criar um `fork` deste projeto e desenvolver todo o teste em cima dele. Esperamos encontrar no *README* principal do seu repositório uma descrição minuciosa sobre:
-- Como foi a experiência no decorrer de todo o processo de desenvolvimento?
-- Quais foram as principais decisões tomadas?
-- Como foi organizado o projeto em termos de estrutura de pastas e arquivos?
-- Instruções de como rodar o projeto.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-Lembre-se que este é um teste técnico e não um concurso público, portanto, não existe apenas uma resposta correta. Mostre que você é bom e nos impressione, mas não esqueça do objetivo do projeto.
+## Project setup
 
-## O Desafio
-Você é um programador backend que já trabalha a muito tempo na área e, apesar de trabalhar duro durante a semana, seu hobby preferido sempre foi avaliar filmes. Tendo feito isso durante anos, suas anotações começaram a se perder entre os arquivos de um computador e outro e você teve a brilhante ideia de organizá-las numa api simples, de modo que pudesse sempre voltar e encontrar facilmente suas anotações sobre os filmes já vistos.
-
-No intuito de desenvolver a api, como qualquer bom programador, você ficou com preguiça de preencher repetidamente uma infinidade de dados sobre cada filme assistido e resolveu simplificar a vida integrando com um serviço já existente ([The Open Movie Database](https://www.omdbapi.com/)).
-
-Entre todas as suas anotações de filmes, encontramos também um esboço da api que você irá montar.
-
-Começando por uma rota de criação de anotações: nela, a ideia é integrar com a api do OMDB e salvar todas as informações que julgar relevante para o banco de dados, trazendo obrigatoriamente a data de lançamento (campo "Released" da api do OMDB) e avaliação (campo "imdbRating" da api do OMDB), em conjunto com o "body" abaixo.  
-```
-Endpoint: '/movie-reviews'
-Método: 'POST'
-Body: {
-    "title": string; // título é o que será usado para buscar as demais informações no OMDB
-    "notes": string; // minhas anotações
-}
-```
-
-Uma sugestão é usar o seguinte endpoint do OMDB para buscar as informações extras sobre o título em questão:
-```
-curl --location 'http://www.omdbapi.com/?apikey=aa9290ba&t=assassins%2Bcreed'
+```bash
+$ npm install
 ```
 
----
+## Compile and run the project
 
-Em seguida, uma rota para listar as suas anotações. Nesta rota, você mesmo deixou como futura melhoria os filtros na query e a ordenação:
-```
-Endpoint: '/movie-reviews'
-Método: 'GET'
-```
-**Opcional**
-- Ter a capacidade de ordenar por data de lançamento e avaliação, de maneira ascendente ou descendente.
-- Capacidade de filtrar as suas anotações por título, atores ou diretores (caso preciso, incluir os demais campos no banco de dados).
+```bash
+# development
+$ npm run start
 
----
+# watch mode
+$ npm run start:dev
 
-Listar uma anotação específica:
-```
-Endpoint: '/movie-reviews/:id'
-Método: 'GET'
+# production mode
+$ npm run start:prod
 ```
 
----
+## Run tests
 
-Atualizar uma anotação:
-```
-Endpoint: '/movie-reviews/:id'
-Método: 'PUT'
-```
+```bash
+# unit tests
+$ npm run test
 
----
+# e2e tests
+$ npm run test:e2e
 
-Deletar uma anotação:
-```
-Endpoint: '/movie-reviews/:id'
-Método: 'DELETE'
+# test coverage
+$ npm run test:cov
 ```
 
----
+## Resources
 
-### Extra
+Check out a few resources that may come in handy when working with NestJS:
 
-Opcionalmente, encontramos algumas ideias de implementação que você deixou anotado mas acabou não tendo tempo de levar adiante:
-```
-TODO: Colocar paginação nas rotas de listagens
-TODO: Ter uma boa documentação de todas as rotas da api e disponibilizá-las no endpoint "/docs"
-TODO: Disponibilizar a api na internet. Para isso, gostaria de contar as visualizações que cada uma das minhas anotações vêm tendo. Criar também uma outra rota de listagem pra mostrar as mais visualizadas.
-```
+- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
+- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
+- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
+- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
+- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-### Instruções de como gerar a chave de API
-Você pode gerar a sua chave de api diretamente no site do [OMDB Api Keys](https://www.omdbapi.com/apikey.aspx). Um email de confirmação deve chegar na sua conta com as credenciais e você só precisa clicar no link para ativá-las.
+## Support
 
-Caso queira utilizar a nossa:
-```
-apikey: aa9290ba
-```
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-### Requisitos do projeto
-- API Rest em Typescript desenvolvida utilizando o framework [NestJS](https://nestjs.com/)
-- Utilização do [Typeorm](https://docs.nestjs.com/recipes/sql-typeorm) para se comunicar com o banco de dados
-- Banco de dados [MySQL](https://www.mysql.com/)
+## Stay in touch
 
+- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-### O que nós ficaríamos felizes de ver em seu teste
-* Testes unitários
-* Body, query e params com algum tipo de validação
-* Documentação de todos os endpoints da api
-* Prettier e eslint configurados no projeto
+## License
 
-### O que nos impressionaria
-* Testes de integração
-* Aplicação facilmente rodável usando docker-compose
-* Tratamento de erros bem estruturado
-* Uso adequado (caso necessário) de interceptors e guards
-* Uso de repositórios para se comunicar com o banco
-
-### O que nós não gostaríamos
-* Descobrir que não foi você quem fez seu teste
-* Ver commits grandes, sem muita explicação nas mensagens em seu repositório 
-* Encontrar um um commit com as dependências de NPM
-
-## O que avaliaremos de seu teste
-* Histórico de commits do git
-* As instruções de como rodar o projeto
-* Organização, semântica, estrutura, legibilidade, manutenibilidade do seu código
-* Alcance dos objetivos propostos
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
