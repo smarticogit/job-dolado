@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=daniel
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=yourdatabase
+    depends_on:
+      - db
+    networks:
+      - nestjs_mysql_network
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: yourdatabase
+      MYSQL_USER: daniel
+      MYSQL_PASSWORD: rootpassword
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - nestjs_mysql_network
+
+volumes:
+  mysql-data:
+
+networks:
+  nestjs_mysql_network:
+    driver: bridge
