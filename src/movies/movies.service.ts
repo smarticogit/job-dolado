@@ -47,6 +47,12 @@ export class MoviesService {
   }
 
   async findOne(id: number) {
+    const movie = await this.movieRepository.findOneBy({ id });
+
+    if (!movie) {
+      throw new BadRequestException(`Movie with ID ${id} not found`);
+    }
+
     return await this.movieRepository.findOne({
       where: { id },
     });
@@ -61,12 +67,18 @@ export class MoviesService {
     }
 
     await this.movieRepository.update(id, { notes });
-
     return await this.movieRepository.findOneBy({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} movie`;
+  async remove(id: number) {
+    const movie = await this.movieRepository.findOneBy({ id });
+
+    if (!movie) {
+      throw new BadRequestException(`Movie with ID ${id} not found`);
+    }
+
+    await this.movieRepository.delete(id);
+    return { message: `Movie with ID ${id} has been removed successfully` };
   }
 }
 
