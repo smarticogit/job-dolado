@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
 import { Movie } from 'src/typeorm/entities/Movie';
@@ -46,12 +46,23 @@ export class MoviesService {
     return await this.movieRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} movie`;
+  async findOne(id: number) {
+    return await this.movieRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateMovieDto: UpdateMovieDto) {
-    return `This action updates a #${id}, ${updateMovieDto} movie`;
+  async update(id: number, updateMovieDto: UpdateMovieDto) {
+    const movie = await this.movieRepository.findOneBy({ id });
+    const { notes } = updateMovieDto;
+
+    if (!movie) {
+      throw new BadRequestException(`Movie with ID ${id} not found`);
+    }
+
+    await this.movieRepository.update(id, { notes });
+
+    return await this.movieRepository.findOneBy({ id });
   }
 
   remove(id: number) {
