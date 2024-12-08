@@ -22,15 +22,17 @@ export class MoviesService {
     try {
       const { data } = await firstValueFrom(this.httpService.get(baseUrl));
 
-      if (!data || !data.Response) {
-        throw new Error('Movie not found on OMDB API');
+      if (data.Response === 'False') {
+        return {
+          message: 'Movie not found',
+        };
       }
 
       const movieCreated = this.movieRepository.create({
         notes,
         title: data.Title,
-        released: data.Released || '',
-        imdb_id: data.imdbID || '',
+        released: data.Released,
+        imdb_id: data.imdbID,
       } as ResponseOmdb);
 
       const movieSaved = await this.movieRepository.save(movieCreated);
