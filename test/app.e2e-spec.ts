@@ -53,7 +53,7 @@ describe('MoviesService', () => {
     jest.clearAllMocks();
   });
 
-  describe('create', () => {
+  describe('create a movie', () => {
     it('should successfully create a new movie', async () => {
       const createMovieDto = { title: 'Inception', notes: 'Great movie' };
 
@@ -119,7 +119,7 @@ describe('MoviesService', () => {
     });
   });
 
-  describe('findAll', () => {
+  describe('movies list', () => {
     it('should return a list of movies', async () => {
       const filters = { title: 'Inception' };
       const mockMovies = [
@@ -139,7 +139,7 @@ describe('MoviesService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('find a movie', () => {
     it('should return a movie by id', async () => {
       const mockMovie = { title: 'Inception', imdb_id: 'tt1375666' };
       mockMovieRepository.findOneBy.mockResolvedValue(mockMovie);
@@ -159,7 +159,7 @@ describe('MoviesService', () => {
     });
   });
 
-  describe('update', () => {
+  describe('update a movie', () => {
     it('should update movie notes successfully', async () => {
       const mockMovie = { id: 1, title: 'Inception', notes: 'Updated notes' };
       const updateMovieDto = { notes: 'Updated notes' };
@@ -189,7 +189,7 @@ describe('MoviesService', () => {
     });
   });
 
-  describe('remove', () => {
+  describe('remove a movie', () => {
     it('should remove a movie successfully', async () => {
       const mockMovie = { id: 1, title: 'Inception' };
 

@@ -21,9 +21,10 @@ export class MoviesService {
   async create(createMovieDto: CreateMovieDto): Promise<Movie> {
     const { title, notes } = createMovieDto;
     const formattedTitle = title.trim().replace(/\s+/g, '%20');
-    const baseUrl = `http://www.omdbapi.com/?apikey=aa9290ba&t=${formattedTitle}`;
+    const baseUrl = process.env.MOVIES_BASE_URL;
+    const makeUrl = `${baseUrl}=${formattedTitle}`;
 
-    const { data } = await firstValueFrom(this.httpService.get(baseUrl));
+    const { data } = await firstValueFrom(this.httpService.get(makeUrl));
 
     if (data.Response === 'False') {
       throw new NotFoundException(`Error: ${data.Error}`);
