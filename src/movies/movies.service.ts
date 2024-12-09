@@ -22,17 +22,37 @@ export class MoviesService {
     try {
       const { data } = await firstValueFrom(this.httpService.get(baseUrl));
 
+      console.log('data --------_>', data);
+
       if (data.Response === 'False') {
         return {
           message: 'Movie not found',
         };
       }
 
+      const movieAlreadyExists = await this.movieRepository.findOneBy({
+        imdb_id: data.imdbID,
+      });
+
+      if (movieAlreadyExists) {
+        return {
+          message: 'Movie already exists in the database',
+        };
+      }
+
+      const released = data.Released === 'N/A' ? null : new Date(data.Released);
+
       const movieCreated = this.movieRepository.create({
         notes,
         title: data.Title,
-        released: data.Released,
+        released,
         imdb_id: data.imdbID,
+        director: data.Director,
+        writer: data.Writer,
+        actors: data.Actors,
+        imdb_ratings: isNaN(parseFloat(data.imdbRating))
+          ? 0
+          : parseFloat(data.imdbRating),
       } as ResponseOmdb);
 
       const movieSaved = await this.movieRepository.save(movieCreated);
@@ -44,8 +64,17 @@ export class MoviesService {
     }
   }
 
-  async findAll() {
-    return await this.movieRepository.find();
+  async findAll(
+    sortBy = 'released',
+    order: 'ASC' | 'DESC' = 'ASC',
+  ): Promise<Movie[]> {
+    const validSortFields = ['released', 'imdb_ratings'];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : 'released';
+
+    return await this.movieRepository
+      .createQueryBuilder('movie')
+      .orderBy(`COALESCE(movie.${sortField}, 0)`, order)
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -87,7 +116,7 @@ export class MoviesService {
 interface ResponseOmdb {
   notes: string;
   title: string;
-  released?: string;
+  released?: Date | null;
   director?: string;
   writer?: string;
   actors?: string;
