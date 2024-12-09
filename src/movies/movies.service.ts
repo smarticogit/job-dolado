@@ -1,5 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
 import { Movie } from 'src/typeorm/entities/Movie';
@@ -14,52 +18,49 @@ export class MoviesService {
     @InjectRepository(Movie) private movieRepository: Repository<Movie>,
   ) {}
 
-  async create(createMovieDto: CreateMovieDto) {
+  async create(createMovieDto: CreateMovieDto): Promise<Movie> {
     const { title, notes } = createMovieDto;
     const formattedTitle = title.trim().replace(/\s+/g, '%20');
     const baseUrl = `http://www.omdbapi.com/?apikey=aa9290ba&t=${formattedTitle}`;
 
-    try {
-      const { data } = await firstValueFrom(this.httpService.get(baseUrl));
+    const { data } = await firstValueFrom(this.httpService.get(baseUrl));
 
-      if (data.Response === 'False') {
-        return {
-          message: 'Movie not found',
-        };
-      }
-
-      const movieAlreadyExists = await this.movieRepository.findOneBy({
-        imdb_id: data.imdbID,
-      });
-
-      if (movieAlreadyExists) {
-        return {
-          message: 'Movie already exists in the database',
-        };
-      }
-
-      const released = data.Released === 'N/A' ? null : new Date(data.Released);
-
-      const movieCreated = this.movieRepository.create({
-        notes,
-        title: data.Title,
-        released,
-        imdb_id: data.imdbID,
-        director: data.Director,
-        writer: data.Writer,
-        actors: data.Actors,
-        imdb_ratings: isNaN(parseFloat(data.imdbRating))
-          ? 0
-          : parseFloat(data.imdbRating),
-      } as ResponseOmdb);
-
-      const movieSaved = await this.movieRepository.save(movieCreated);
-
-      return movieSaved;
-    } catch (error) {
-      console.error('Error while creating movie:', error);
-      throw new Error('Error while creating movie: ' + error.message);
+    if (data.Response === 'False') {
+      throw new NotFoundException(`Error: ${data.Error}`);
     }
+
+    const movieAlreadyExists = await this.movieRepository.findOneBy({
+      imdb_id: data.imdbID,
+    });
+
+    if (movieAlreadyExists) {
+      throw new BadRequestException(
+        `Movie with IMDB ID ${data.imdbID} already exists`,
+      );
+    }
+
+    const released = data.Released === 'N/A' ? null : new Date(data.Released);
+
+    const movieCreated = this.movieRepository.create({
+      notes,
+      title: data.Title,
+      released,
+      imdb_id: data.imdbID,
+      director: data.Director,
+      writer: data.Writer,
+      actors: data.Actors,
+      imdb_ratings: isNaN(parseFloat(data.imdbRating))
+        ? 0
+        : parseFloat(data.imdbRating),
+    } as ResponseOmdb);
+
+    const movieSaved = await this.movieRepository.save(movieCreated);
+
+    if (!movieSaved) {
+      throw new BadRequestException('Error saving movie');
+    }
+
+    return movieSaved;
   }
 
   async findAll(
@@ -94,38 +95,40 @@ export class MoviesService {
     return await query.getMany();
   }
 
-  async findOne(id: number) {
+  private async findMovieByIdOrThrow(id: number): Promise<Movie> {
     const movie = await this.movieRepository.findOneBy({ id });
 
     if (!movie) {
-      throw new BadRequestException(`Movie with ID ${id} not found`);
+      throw new NotFoundException(`Movie with ID ${id} not found`);
     }
 
-    return await this.movieRepository.findOne({
-      where: { id },
-    });
+    return movie;
+  }
+
+  async findOne(id: number): Promise<Movie> {
+    await this.findMovieByIdOrThrow(id);
+
+    const movie = await this.movieRepository.findOneBy({ id });
+    return movie;
   }
 
   async update(id: number, updateMovieDto: UpdateMovieDto) {
-    const movie = await this.movieRepository.findOneBy({ id });
+    await this.findMovieByIdOrThrow(id);
     const { notes } = updateMovieDto;
-
-    if (!movie) {
-      throw new BadRequestException(`Movie with ID ${id} not found`);
-    }
 
     await this.movieRepository.update(id, { notes });
     return await this.movieRepository.findOneBy({ id });
   }
 
   async remove(id: number) {
-    const movie = await this.movieRepository.findOneBy({ id });
+    await this.findMovieByIdOrThrow(id);
 
-    if (!movie) {
-      throw new BadRequestException(`Movie with ID ${id} not found`);
+    const movieDeleted = await this.movieRepository.delete(id);
+
+    if (!movieDeleted.affected) {
+      throw new BadRequestException('Error deleting movie');
     }
 
-    await this.movieRepository.delete(id);
     return { message: `Movie with ID ${id} has been removed successfully` };
   }
 }
