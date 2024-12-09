@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
-import { Movie } from 'src/typeorm/entities/Movie';
 import { Repository } from 'typeorm';
+import { Movie } from '../typeorm/entities/Movie';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 

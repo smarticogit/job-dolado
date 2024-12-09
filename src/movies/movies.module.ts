@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Movie } from 'src/typeorm/entities/Movie';
+import { Movie } from '../typeorm/entities/Movie';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 
