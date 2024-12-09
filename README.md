@@ -22,7 +22,7 @@ git clone https://github.com/smarticogit/job-dolado
 
 <br>
 
-#### passo 1: instale as dependências:
+#### passo 1: Instale as dependências:
 
 ```sh
 npm install
@@ -30,7 +30,26 @@ npm install
 
 <br>
 
-#### passo 2: Verifique se o serviço do Docker está ativo e execute:
+#### passo 2: Crie um o arquivo '.env' na raiz do projeto e cola a sugestão abaixo:
+
+```sh
+OMDB_URL=http://www.omdbapi.com/
+OMDB_KEY=aa9290ba
+
+DB_USER=daniel
+
+DB_PASSWORD=rootpassword
+
+DB_NAME=yourdatabase
+
+DB_HOST=localhost
+
+DB_PORT=3306
+```
+
+<br>
+
+#### passo 3: Verifique se o serviço do Docker está ativo e execute:
 
 ```sh
 docker compose up --build
@@ -38,7 +57,7 @@ docker compose up --build
 
 <br>
 
-#### passo 3: Acesso a rota de documentação:
+#### passo 4: Acesso a rota de documentação:
 
 ```sh
 localhost:3000/docs
