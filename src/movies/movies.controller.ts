@@ -8,6 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Movie } from 'src/typeorm/entities/Movie';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { MoviesService } from './movies.service';
@@ -25,8 +26,11 @@ export class MoviesController {
   findAll(
     @Query('sortBy') sortBy?: string,
     @Query('order') order?: 'ASC' | 'DESC',
-  ) {
-    return this.moviesService.findAll(sortBy, order);
+    @Query('title') title?: string,
+    @Query('search') search?: string,
+  ): Promise<Movie[]> {
+    const filters = { title, search };
+    return this.moviesService.findAll(sortBy, order, filters);
   }
 
   @Get(':id')

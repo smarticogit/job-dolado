@@ -22,8 +22,6 @@ export class MoviesService {
     try {
       const { data } = await firstValueFrom(this.httpService.get(baseUrl));
 
-      console.log('data --------_>', data);
-
       if (data.Response === 'False') {
         return {
           message: 'Movie not found',
@@ -67,14 +65,33 @@ export class MoviesService {
   async findAll(
     sortBy = 'released',
     order: 'ASC' | 'DESC' = 'ASC',
+    filters?: { title?: string; search?: string },
   ): Promise<Movie[]> {
     const validSortFields = ['released', 'imdb_ratings'];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'released';
 
-    return await this.movieRepository
-      .createQueryBuilder('movie')
-      .orderBy(`COALESCE(movie.${sortField}, 0)`, order)
-      .getMany();
+    const query = this.movieRepository.createQueryBuilder('movie');
+
+    if (filters?.title) {
+      query.andWhere('LOWER(movie.title) LIKE :title', {
+        title: `%${filters.title.toLowerCase()}%`,
+      });
+    }
+
+    if (filters?.search) {
+      query.andWhere(
+        `
+          (LOWER(movie.director) LIKE :search 
+          OR LOWER(movie.actors) LIKE :search 
+          OR LOWER(movie.writer) LIKE :search)
+        `,
+        { search: `%${filters.search.toLowerCase()}%` },
+      );
+    }
+
+    query.orderBy(`COALESCE(movie.${sortField}, 0)`, order);
+
+    return await query.getMany();
   }
 
   async findOne(id: number) {
