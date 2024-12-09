@@ -13,6 +13,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+      - OMDB_URL=${OMDB_URL}
+      - OMDB_KEY=${OMDB_KEY}
     depends_on:
       - db
     networks:
@@ -21,16 +23,21 @@ services:
   db:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: yourdatabase
-      MYSQL_USER: daniel
-      MYSQL_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - '3306:3306'
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - nestjs_mysql_network
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mysql-data:
